@@ -1,0 +1,15 @@
+{
+  "name": "fullgradeapp",
+  "version": "1.0.0",
+  "description": "a complete app with backend",
+  "keywords": [
+    "javascript"
+  ],
+  "license": "ISC",
+  "author": "Shivam aggarwal",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
