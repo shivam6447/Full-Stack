@@ -1,5 +1,4 @@
 import {v2 as cloudnary} from 'cloudinary'
-import { log } from 'console';
 import fs from 'fs'
 
 cloudnary.config({
@@ -8,7 +7,7 @@ cloudnary.config({
     api_secret : process.env.CLOUDNARY_API_SECRET
 });
 
-const uploadResult = async(localFilePath) => {
+const uploadOnCloudnary = async(localFilePath) => {
    try{
     if(!localFilePath) return null
     //upload file
@@ -25,4 +24,4 @@ const uploadResult = async(localFilePath) => {
    }
 }
 
-export {uploadResult}
+export { uploadOnCloudnary }
