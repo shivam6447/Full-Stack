@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "c71a39f0-29c8-47a3-b9d0-15a9f993e32b",
+    "name": "FullStack Backend API",
+    "description": "Postman collection for FullStack Backend API with automated token management.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users & Auth",
+      "item": [
+        {
+          "name": "1. Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fullName",
+                  "value": "Shivam Aggarwal",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "shivam@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "shivam",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "shivam123",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "description": "Required avatar image file"
+                },
+                {
+                  "key": "coverImage",
+                  "type": "file",
+                  "description": "Optional cover image file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "register"
+              ]
+            },
+            "description": "Register a new user account with avatar image upload (multipart/form-data)."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseData = pm.response.json();",
+                  "    if (responseData.data && responseData.data.accessToken) {",
+                  "        pm.collectionVariables.set('accessToken', responseData.data.accessToken);",
+                  "        console.log('Saved accessToken to collection variables');",
+                  "    }",
+                  "    if (responseData.data && responseData.data.refreshToken) {",
+                  "        pm.collectionVariables.set('refreshToken', responseData.data.refreshToken);",
+                  "        console.log('Saved refreshToken to collection variables');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"shivam\",\n  \"email\": \"shivam@example.com\",\n  \"password\": \"shivam123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            },
+            "description": "Login with username or email and password. Automatically stores accessToken and refreshToken into variables."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Refresh Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseData = pm.response.json();",
+                  "    if (responseData.data && responseData.data.accessToken) {",
+                  "        pm.collectionVariables.set('accessToken', responseData.data.accessToken);",
+                  "    }",
+                  "    if (responseData.data && responseData.data.refreshToken) {",
+                  "        pm.collectionVariables.set('refreshToken', responseData.data.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/refresh-token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "refresh-token"
+              ]
+            },
+            "description": "Refreshes the access token and refresh token using the current refreshToken."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Logout User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set('accessToken', '');",
+                  "    pm.collectionVariables.set('refreshToken', '');",
+                  "    console.log('Cleared session tokens');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "logout"
+              ]
+            },
+            "description": "Logs out the authenticated user, clearing cookies and invalidating the stored refreshToken in database."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
