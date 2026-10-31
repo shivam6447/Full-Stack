@@ -16,10 +16,8 @@ const storage = multer.diskStorage({
         crypto.randomBytes(16, function (err, raw) {
             if (err) return cb(err);
 
-            cb(
-                null,
-                file.fieldname + "-" + raw.toString("hex")
-            );
+            const ext = path.extname(file.originalname);
+            cb(null, `${file.fieldname}-${raw.toString("hex")}${ext}`);
         });
     }
 });
